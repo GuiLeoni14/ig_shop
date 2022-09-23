@@ -52,7 +52,7 @@ export function Cart() {
             disabled={isCreatingCheckoutSession}
             onClick={handleBuyProduct}
           >
-            Finalizar Comprar
+            Finalizar compra
           </DefaultButton>
         </S.Footer>
       </S.Content>
