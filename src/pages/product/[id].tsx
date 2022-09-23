@@ -1,17 +1,18 @@
-import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/future/image";
 import Head from "next/head";
-import { useState } from "react";
 import Stripe from "stripe";
 import { stripe } from "../../lib/stripe";
 import * as S from "../../styles/pages/product";
+import { useContextSelector } from "use-context-selector";
+import { CartContext } from "../../context/CartContext";
 
 type Product = {
   id: string;
   name: string;
   imageUrl: string;
-  price: string;
+  price: number;
+  priceFormatted: string;
   description: string;
   defaultPriceId: string;
 };
@@ -20,25 +21,26 @@ interface ProductProps {
 }
 
 export default function PageProduct({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false);
+  const handleAddProduct = useContextSelector(
+    CartContext,
+    (CartContext) => CartContext.handleAddProduct
+  );
+  const isCreatingCheckoutSession = useContextSelector(
+    CartContext,
+    (CartContext) => CartContext.isCreatingCheckoutSession
+  );
 
-  const handleBuyProduct = async () => {
-    try {
-      setIsCreatingCheckoutSession(true);
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
-      const { checkoutUrl } = response.data;
-
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      setIsCreatingCheckoutSession(false);
-      // conectar ao data dog ou sentry
-      alert("Falha ao criar checkout");
-      console.log(error);
-    }
+  const handleClickButton = async () => {
+    handleAddProduct({
+      id: product.id,
+      defaultPriceId: product.defaultPriceId,
+      imageUrl: product.imageUrl,
+      name: product.name,
+      price: product.price,
+      priceFormatted: product.priceFormatted,
+    });
   };
+
   const titleHead = `${product.name} | Ignite Shop`;
   return (
     <>
@@ -51,11 +53,11 @@ export default function PageProduct({ product }: ProductProps) {
         </S.ImageContainer>
         <S.ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{product.priceFormatted}</span>
           <p>{product.description}</p>
           <button
             disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
+            onClick={handleClickButton}
           >
             Comprar agora
           </button>
@@ -90,10 +92,11 @@ export const getStaticProps: GetStaticProps<
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: new Intl.NumberFormat("pt-br", {
+        priceFormatted: new Intl.NumberFormat("pt-br", {
           style: "currency",
           currency: "BRL",
         }).format(price.unit_amount / 100),
+        price: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id,
       },

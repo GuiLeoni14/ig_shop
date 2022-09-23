@@ -11,22 +11,17 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const priceId = req.body.priceId as string;
+  const checkoutItems = req.body.checkoutProducts;
 
-  if (!priceId) {
-    return res.status(400).json({ error: "Price not found" });
+  if (!checkoutItems || checkoutItems.length < 1) {
+    return res.status(400).json({ error: "Items not found" });
   }
 
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: "payment",
     success_url: `${process.env.NEXT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_URL}`,
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ],
+    line_items: checkoutItems,
   });
 
   return res.status(201).json({ checkoutUrl: checkoutSession.url });

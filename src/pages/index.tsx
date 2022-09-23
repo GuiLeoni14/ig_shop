@@ -40,8 +40,16 @@ export default function Home({ products }: HomeProps) {
               <S.Product className="keen-slider__slide">
                 <Image src={product.imageUrl} width={520} height={480} alt="" />
                 <footer>
-                  <strong>{product.name}</strong>
-                  <span>{product.price}</span>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{product.price}</span>
+                  </div>
+                  <button>
+                    <img
+                      src="/assets/icon_cart.svg"
+                      alt="icon para adicionar ao carrinho"
+                    />
+                  </button>
                 </footer>
               </S.Product>
             </Link>
