@@ -9,6 +9,7 @@ export const globalStyles = globalCss({
   button: {
     background: "none",
     border: "none",
+    cursor: "pointer",
   },
   body: {
     backgroundColor: "$gray900",

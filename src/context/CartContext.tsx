@@ -70,7 +70,7 @@ export function CardContextProvider({ children }: CardContextProviderProps) {
         MySwal.fire({
           position: "center",
           icon: "info",
-          title: "Produto adicionado já adicionado á sacola",
+          title: "Este produto já está na sacola",
           color: "#c4c4cc",
           background: "#00875f",
           showConfirmButton: false,
@@ -101,6 +101,18 @@ export function CardContextProvider({ children }: CardContextProviderProps) {
         quantity: 1,
       };
     });
+    if (checkoutProducts.length < 1) {
+      MySwal.fire({
+        position: "center",
+        icon: "info",
+        title: "Nenhum produto na sacola",
+        color: "#c4c4cc",
+        background: "#00875f",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
     try {
       setIsCreatingCheckoutSession(true);
       const response = await axios.post("/api/checkout", {
