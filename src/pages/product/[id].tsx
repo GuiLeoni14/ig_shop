@@ -1,6 +1,7 @@
 import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/future/image";
+import Head from "next/head";
 import { useState } from "react";
 import Stripe from "stripe";
 import { stripe } from "../../lib/stripe";
@@ -38,21 +39,29 @@ export default function PageProduct({ product }: ProductProps) {
       console.log(error);
     }
   };
-
+  const titleHead = `${product.name} | Ignite Shop`;
   return (
-    <S.Container>
-      <S.ImageContainer>
-        <Image src={product.imageUrl} width={520} height={480} alt="" />
-      </S.ImageContainer>
-      <S.ProductDetails>
-        <h1>{product.name}</h1>
-        <span>{product.price}</span>
-        <p>{product.description}</p>
-        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
-          Comprar agora
-        </button>
-      </S.ProductDetails>
-    </S.Container>
+    <>
+      <Head>
+        <title>{titleHead}</title>
+      </Head>
+      <S.Container>
+        <S.ImageContainer>
+          <Image src={product.imageUrl} width={520} height={480} alt="" />
+        </S.ImageContainer>
+        <S.ProductDetails>
+          <h1>{product.name}</h1>
+          <span>{product.price}</span>
+          <p>{product.description}</p>
+          <button
+            disabled={isCreatingCheckoutSession}
+            onClick={handleBuyProduct}
+          >
+            Comprar agora
+          </button>
+        </S.ProductDetails>
+      </S.Container>
+    </>
   );
 }
 
