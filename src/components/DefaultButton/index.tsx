@@ -1,7 +1,7 @@
-import { HTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 import * as S from "./styles";
 
-interface DefaultButtonProps extends HTMLAttributes<HTMLButtonElement> {
+interface DefaultButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 export function DefaultButton({ children, ...rest }: DefaultButtonProps) {

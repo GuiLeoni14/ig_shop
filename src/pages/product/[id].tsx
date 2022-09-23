@@ -25,6 +25,10 @@ export default function PageProduct({ product }: ProductProps) {
     CartContext,
     (CartContext) => CartContext.handleAddProduct
   );
+  const isCreatingCheckoutSession = useContextSelector(
+    CartContext,
+    (CartContext) => CartContext.isCreatingCheckoutSession
+  );
 
   const handleClickButton = async () => {
     handleAddProduct({
@@ -51,7 +55,12 @@ export default function PageProduct({ product }: ProductProps) {
           <h1>{product.name}</h1>
           <span>{product.priceFormatted}</span>
           <p>{product.description}</p>
-          <button onClick={handleClickButton}>Comprar agora</button>
+          <button
+            disabled={isCreatingCheckoutSession}
+            onClick={handleClickButton}
+          >
+            Comprar agora
+          </button>
         </S.ProductDetails>
       </S.Container>
     </>

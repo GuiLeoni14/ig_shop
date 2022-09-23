@@ -22,6 +22,10 @@ export function Cart() {
     CartContext,
     (CartContext) => CartContext.cartTotalPrice
   );
+  const isCreatingCheckoutSession = useContextSelector(
+    CartContext,
+    (CartContext) => CartContext.isCreatingCheckoutSession
+  );
 
   return (
     <Dialog.Portal>
@@ -44,7 +48,10 @@ export function Cart() {
             <span>Valor total</span>
             <strong>{cartTotalPrice}</strong>
           </div>
-          <DefaultButton onClick={handleBuyProduct}>
+          <DefaultButton
+            disabled={isCreatingCheckoutSession}
+            onClick={handleBuyProduct}
+          >
             Finalizar Comprar
           </DefaultButton>
         </S.Footer>

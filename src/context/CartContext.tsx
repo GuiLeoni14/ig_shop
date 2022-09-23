@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -121,13 +121,33 @@ export function CardContextProvider({ children }: CardContextProviderProps) {
       const { checkoutUrl } = response.data;
 
       window.location.href = checkoutUrl;
+      localStorage.removeItem("productsCheckout");
     } catch (error) {
       setIsCreatingCheckoutSession(false);
       // conectar ao data dog ou sentry
-      alert("Falha ao criar checkout");
       console.log(error);
     }
   }, [products]);
+
+  useEffect(() => {
+    try {
+      const productsStorage = JSON.parse(
+        localStorage.getItem("productsCheckout")
+      );
+      if (productsStorage.length > 0) {
+        setProducts(JSON.parse(localStorage.getItem("productsCheckout")));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      localStorage.setItem("productsCheckout", JSON.stringify(products));
+    }
+  }, [products]);
+
   return (
     <CartContext.Provider
       value={{
